@@ -1,0 +1,22 @@
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>practica</title>
+    <style>
+            html, body { 
+            background-color:#000;
+            margin: 0;
+            padding: 0;
+            height: 100%;
+            overflow: hidden !important;  
+            }
+    </style>
+</head>
+<body>
+
+    <input name="myFile" type="file" id="file">
+
+    <script src="<%= htmlWebpackPlugin.files.chunks.vendor.entry  %>"></script>
+    <script src="<%= htmlWebpackPlugin.files.chunks.main.entry %>"></script>
+</body>
+</html>
