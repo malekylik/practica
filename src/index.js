@@ -1,17 +1,23 @@
-import Dicom from './Dicom';
+import Dicom from './file/Dicom';
+import FileSelector from './Component/FileSelector/FileSelector';
 
 const xtkScript = document.createElement('script');
 xtkScript.src = "xtk.js";
 document.getElementsByTagName('head')[0].appendChild(xtkScript);
 
 window.onload = async () => {
-  let filesPromise = new Promise((resolve) => {
-    file.onchange = function(e) {
-      resolve(e.target.files);
-    }
-  });
+  const fileSelector = new FileSelector(['.dcm']);
+  fileSelector.show();
 
-  const files = await filesPromise;
+  let files;
+
+  try {
+    files = await fileSelector.getFiles();
+  } catch(e) {
+    window.onload();
+  } finally {
+    fileSelector.remove();
+  }
 
   const dicom = new Dicom(files);
 

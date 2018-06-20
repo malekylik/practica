@@ -1,0 +1,43 @@
+.file-selecting-container {
+    position: absolute;
+    background-color: white;
+    width: 500px;
+    height: 300px;
+    top: calc(50% - 150px);
+    left: calc(50% - 250px);
+    border-radius: 10px;
+    border: 2px solid black;
+    padding: 10px;
+    z-index: 10;
+    display: flex;
+    flex-flow: column;
+    text-shadow: 0 1px white;
+}
+
+.file-selecting-input {
+    position: absolute;
+    clip: rect(0,0,0,0);
+    width: 1px;
+}
+
+.file-selecting-submit {
+    align-self: flex-end;
+}
+
+.file-selecting-drag-and-drop {
+    margin-top: 10px;
+    margin-bottom: 10px;
+    font-size: 1.4rem;
+    position: relative;
+    flex-grow: 1;
+    border: 2px dashed rgba(0,0,0,.4);
+    display: flex;
+    overflow: auto;
+    padding: 3px;
+}
+
+.file-selecting-drag-and-drop-empty::after {
+    margin: auto;
+    content: "Перетащите файлы cюда";
+    color: rgba(0,0,0,.7);
+}
