@@ -1,80 +1,43 @@
-import X from 'xtk';
-
-window.X = X.X;
-
-//   // create a new X.mesh
-//   var porsche = new X.mesh();
-//   // .. and associate the .stl to it
-
-//   const modelData = await (await fetch('./assets/porsche.stl')).arrayBuffer();
-
-//   const url = './assets/porsche.stl';
-
-
-
-//   porsche.filedata = modelData;
-
-//   const p = new X.parserSTL();
-//   p.parse(porsche, porsche, modelData);
+const xtkScript = document.createElement('script');
+xtkScript.src = "xtk.js";
+document.getElementsByTagName('head')[0].appendChild(xtkScript);
 
 window.onload = async () => {
-    let filePromise = new Promise((resolve) => {
-      file.onchange = (e) => {
+    let filesPromise = new Promise((resolve) => {
+      file.onchange = function(e) {
         resolve(e.target.files);
       }
     });
 
-    const files = await filePromise;
+    const files = await filesPromise;
 
     console.dir(files);
 
     const fileReader = new FileReader();
-
-    filePromise = new Promise ((resolve) => {
-      fileReader.onloadend = (e) => {
-        resolve(e.target.result);
-      }
-    });
-
-    fileReader.readAsArrayBuffer(files[0]);
-
-    let fileArray = await filePromise;
 
     const X = window.X;
 
     const r = new X.renderer3D();
     r.init();
 
+    const v = new X.volume();
+    const filesUrl = Array.from(files).map(file => URL.createObjectURL(file));
 
+    v.file = filesUrl;
 
+  r.add(v);
 
-
-
-  // create a new X.mesh
-  var porsche = new X.mesh();
-  // .. and associate the .stl to it
-
-  // const modelData = await (await fetch('./assets/porsche.stl')).arrayBuffer();
-
-  // const url = './assets/porsche.stl';
-
-
-
-  porsche.filedata = fileArray;
-
-  const p = new X.parserSTL();
-  p.parse(porsche, porsche, fileArray);
-
-
-  // activate the magic mode which results in a colorful rendering since the
-  // point colors are based on the point position
-  porsche.magicmode = true;
-  // set a caption which appears on mouseover
-//   porsche.caption = 'The magic Porsche!';
+  r.onShowtime = () => {
+    v.volumeRendering = true;
+    v.lowerThreshold = 80;
+    v.windowLower = 115;
+    v.windowHigh = 360;
+    v.minColor = [0.2, 0.06666666666666667, 1];
+    v.maxColor = [0.5843137254901961, 1, 0];
+    v.opacity = 0.2;
+    
+  };
   
-  // .. add the porsche
-  r.add(porsche);
-  
-  // .. and start the loading/rendering
+
   r.render();
 };
