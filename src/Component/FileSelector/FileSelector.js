@@ -108,6 +108,10 @@ export default class FileSelector {
                     const supportedFiles = this.supportedFiles;
                     const files = this.files;
 
+                    if (files === null) {
+                        return null;
+                    }
+
                     if (supportedFiles.length !== 0) {
                         for (let i = 0; i < files.length; i++) {
                             let condition = false;
