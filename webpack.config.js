@@ -39,7 +39,7 @@ module.exports = {
     }),
     new CleanWebpackPlugin(['dist'], {
       verbose: false,
-      exclude: ['assets',]
+      exclude: ['assets', 'xtk.js']
     })
   ],
   optimization: {

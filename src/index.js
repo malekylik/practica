@@ -1,5 +1,8 @@
+import * as dat from 'dat.gui';
+
 import Dicom from './file/Dicom';
 import FileSelector from './Component/FileSelector/FileSelector';
+import VolumeControls from './VolumeContorols';
 
 const xtkScript = document.createElement('script');
 xtkScript.src = "xtk.js";
@@ -30,17 +33,24 @@ window.onload = async () => {
 
   v.file = dicom.getUrls();
 
+  const volumeControls = new VolumeControls(v);
+  const gui = new dat.GUI();
+  
+  r.onShowtime = () => {
+    volumeControls.initDefault();
+
+    gui.add(volumeControls, 'opacity', 0, 1);
+    gui.add(volumeControls, 'lowerThreshold', 0, 1000);
+    gui.add(volumeControls, 'upperThreshold', 0, 2000);
+    gui.add(volumeControls, 'windowLow', 0, 1000);
+    gui.add(volumeControls, 'windowHigh', 0, 1000);
+    gui.addColor(volumeControls, 'minColor');
+    gui.addColor(volumeControls, 'maxColor');
+
+    r.camera.position = [0, 0, v.dimensions[0]];    
+  };
+
   r.add(v);
 
-  r.onShowtime = () => {
-    v.volumeRendering = true;
-    v.lowerThreshold = 80;
-    v.windowLower = 115;
-    v.windowHigh = 360;
-    v.minColor = [0.2, 0.06666666666666667, 1];
-    v.maxColor = [0.5843137254901961, 1, 0];
-    v.opacity = 0.2;
-  };
-  
   r.render();
 };
