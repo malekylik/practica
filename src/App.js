@@ -8,7 +8,13 @@ export default class App {
     constructor() {
         this.fileSelector = new FileSelector(['.dcm']);
 
-        this._2dR;
+        this.onShowtime = this.onShowtime.bind(this);
+
+        this.init();
+    }
+
+    init() {
+        this._2dR = null;
     
         this._3dR = new X.renderer3D();
         this._3dR.init();
@@ -17,12 +23,13 @@ export default class App {
             gui: new dat.GUI(),
         };
 
-        this._3dRendrer = true;
+        this._rendrer = '3D';
         this.show2D = true;
 
-        this.gui.renderSelectFolder = this.gui.gui.addFolder('Select Renderer:');
-        this.gui.renderSelectFolder.add(this, '_3dRendrer').name('3D Renderer').onFinishChange((value) => {
-            if (value) {
+        this.gui.options = this.gui.gui.addFolder('Options:');
+        this.gui.options.add(this, 'resetFile').name('Choose another file');
+        this.gui.options.add(this, '_rendrer', [ '2D', '3D' ]).name('Renderer Type:').onFinishChange((value) => {
+            if (value === '3D') {
                 cancelAnimationFrame(this._2dR.He);
                 this.hide2DRenderer();
                 this.reveal3DRenderer();
@@ -38,6 +45,8 @@ export default class App {
                 this.gui.renderControls.open();
             }
         });
+
+        this._orientation2DCanvases = 'Z';
 
         this.gui.renderControls = null;
 
@@ -75,8 +84,22 @@ export default class App {
                 return this.canvases[this.currentIndex];
             }
         });
+    }
 
-        this.onShowtime = this.onShowtime.bind(this);
+    set orientation2DCanvases(orientation = 'Z') {
+        this.currentFile._2d.canvases.forEach((renderer) => {
+            renderer.destroy();
+        });
+
+        this.currentFile._2d.canvases = [];
+        this.init2DCanvases(orientation);
+
+        this.reveal2DRenderer();
+        this._2dR.render();
+    }
+
+    get orientation2DCanvases() {
+        return this._orientation2DCanvases;
     }
 
     setControlsFor2D() {
@@ -86,8 +109,8 @@ export default class App {
 
         this.gui.renderControls = this.gui.gui.addFolder('Render Controls');
 
-        const fileNameControl = this.gui.renderControls.add(this.currentFile._2d, 'currentFileName').name('File Name:');
-        fileNameControl.domElement.style.pointerEvents = "none";
+        this.gui.renderControls.add(this.currentFile._2d, 'currentFileName')
+        .name('File Name:').listen().domElement.style.pointerEvents = "none";
 
         this.gui.renderControls.add(this.currentFile._2d, 'currentIndex')
         .min(0)
@@ -98,10 +121,25 @@ export default class App {
             this.hide2DRenderer();
             this._2dR = this.currentFile._2d.renderer;
             this.currentFile._2d.currentFileName = this.fileSelector.getFile(this.currentFile._2d.currentIndex).name;
-            fileNameControl.setValue(this.currentFile._2d.currentFileName);
             this.reveal2DRenderer();
             this._2dR.render();
         });
+
+        this.gui.renderControls.add(this, 'orientation2DCanvases', [ 'X', 'Y', 'Z' ]).name('Orientation:');
+    }
+
+    resetFile() {
+        this.currentFile._2d.canvases.forEach((renderer) => {
+            renderer.destroy();
+        });
+
+        this._3dR.destroy();
+
+        this.gui.gui.destroy();
+
+        this.init();
+
+        this.selectFiles();
     }
 
     setControlsFor3D() {
@@ -172,9 +210,13 @@ export default class App {
             return _2dVolume;
         });
 
+        this.init2DCanvases(this._orientation2DCanvases);
+    }
+
+    init2DCanvases(orientation = 'Z') {
         this.currentFile._2d.canvases = this.currentFile._2d.volumes.map((volume) => {
             const renderer = new X.renderer2D();
-            renderer.orientation = 'Z';
+            renderer.orientation = orientation;
             renderer.init();
             renderer.add(volume);
 
@@ -186,6 +228,8 @@ export default class App {
         this.currentFile._2d.currentFileName = this.fileSelector.getFile(this.currentFile._2d.currentIndex).name;
 
         this._2dR = this.currentFile._2d.renderer;
+
+        this._orientation2DCanvases = orientation;
     }
 
     hideControls() {
@@ -218,7 +262,7 @@ export default class App {
         this.setControlsFor3D();
     
         this._3dR.camera.position = [0, 0, this.currentFile._3d.volume.dimensions[0]];   
-        this.gui.renderSelectFolder.open();
+        this.gui.options.open();
         this.gui.renderControls.open();
     }
 }

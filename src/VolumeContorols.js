@@ -63,7 +63,7 @@ export default class VolumeControls {
     }
 
     get minColor() {
-        return [this.volume.minColor[0] * 256, this.volume.minColor[1] * 256, this.volume.minColor[2] * 256];
+        return [this.volume.minColor[0] * 255, this.volume.minColor[1] * 255, this.volume.minColor[2] * 255];
     }
 
     set minColor(minColor) {
@@ -73,7 +73,7 @@ export default class VolumeControls {
     }
 
     get maxColor() {
-        return [this.volume.maxColor[0] * 256, this.volume.maxColor[1] * 256, this.volume.maxColor[2] * 256];
+        return [this.volume.maxColor[0] * 255, this.volume.maxColor[1] * 255, this.volume.maxColor[2] * 255];
     }
 
     set maxColor(maxColor) {

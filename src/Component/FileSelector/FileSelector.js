@@ -15,15 +15,15 @@ export default class FileSelector {
         const input = document.createElement('input');
         const labelButton = document.createElement('label');
         const labelDragAndDrop = document.createElement('label');
-        const submitButton = document.createElement('button');
+        const submitButton = document.createElement('button-app');
 
         container.classList.add('file-selecting-container');
         input.classList.add('file-selecting-input');
-        labelButton.classList.add('button');
+        labelButton.classList.add('button-app');
         labelDragAndDrop.classList.add('file-selecting-drag-and-drop');
         labelDragAndDrop.classList.add('file-selecting-drag-and-drop-empty');
         submitButton.classList.add('file-selecting-submit');
-        submitButton.classList.add('button');
+        submitButton.classList.add('button-app');
 
         labelButton.setAttribute('for', 'file-selecting');
         labelDragAndDrop.setAttribute('for', 'file-selecting');
