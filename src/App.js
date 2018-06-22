@@ -54,8 +54,9 @@ export default class App {
         this.currentFile = {
             _2d: {
                 volumes: [],
-                currentIndex: 0,
                 canvases: [],
+                currentIndex: 0,
+                currentFileName: ''
             },
             _3d: {
                 volume: null,
@@ -85,6 +86,9 @@ export default class App {
 
         this.gui.renderControls = this.gui.gui.addFolder('Render Controls');
 
+        const fileNameControl = this.gui.renderControls.add(this.currentFile._2d, 'currentFileName').name('File Name:');
+        fileNameControl.domElement.style.pointerEvents = "none";
+
         this.gui.renderControls.add(this.currentFile._2d, 'currentIndex')
         .min(0)
         .max(this.currentFile._2d.volumes.length - 1)
@@ -93,6 +97,8 @@ export default class App {
             cancelAnimationFrame(this._2dR.He);
             this.hide2DRenderer();
             this._2dR = this.currentFile._2d.renderer;
+            this.currentFile._2d.currentFileName = this.fileSelector.getFile(this.currentFile._2d.currentIndex).name;
+            fileNameControl.setValue(this.currentFile._2d.currentFileName);
             this.reveal2DRenderer();
             this._2dR.render();
         });
@@ -176,6 +182,8 @@ export default class App {
 
             return renderer;
         });
+
+        this.currentFile._2d.currentFileName = this.fileSelector.getFile(this.currentFile._2d.currentIndex).name;
 
         this._2dR = this.currentFile._2d.renderer;
     }

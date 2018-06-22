@@ -94,6 +94,16 @@ export default class FileSelector {
         this.labelDragAndDrop.style.backgroundColor = 'initial';
     }
 
+    getFile(index) {
+        if (this.files !== null) {
+            if (this.files[index]) {
+                return this.files[index];
+            }
+        }
+
+        return null;
+    }
+
     show() {
         document.body.appendChild(this.html);
     }
